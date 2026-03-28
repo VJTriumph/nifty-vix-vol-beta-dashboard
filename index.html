@@ -1,232 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nifty & India VIX - Vol Beta Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0e1a;color:#e0e6f0;font-family:'Segoe UI',sans-serif;min-height:100vh}.header{background:linear-gradient(135deg,#0f1629,#1a2340);padding:20px 30px;border-bottom:1px solid #2a3a5c;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px}.header-title{font-size:1.5rem;font-weight:700;background:linear-gradient(90deg,#4fc3f7,#7c4dff,#f06292);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.header-sub{font-size:.72rem;color:#5a6d8a;margin-top:4px}.tweet-banner{background:#0d1b2a;border-left:3px solid #1da1f2;margin:15px 30px;padding:12px 16px;border-radius:6px;font-size:.8rem;color:#a0b4cc;line-height:1.5}.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 30px;background:#0d1422;border-bottom:1px solid #1e2d4a}.period-btns{display:flex;gap:6px}.period-btn{padding:6px 14px;border-radius:20px;border:1px solid #2a3a5c;background:transparent;color:#7a8db0;cursor:pointer;font-size:.78rem;transition:all .2s}.period-btn:hover,.period-btn.active{background:#1e3a6e;border-color:#4fc3f7;color:#4fc3f7}.date-inputs{display:flex;align-items:center;gap:8px;font-size:.78rem;color:#7a8db0}.date-inputs input{background:#111c30;border:1px solid #2a3a5c;color:#e0e6f0;padding:5px 10px;border-radius:6px;font-size:.78rem}.fetch-btn{padding:7px 18px;background:linear-gradient(135deg,#1565c0,#7c4dff);border:none;border-radius:20px;color:#fff;cursor:pointer;font-size:.78rem;font-weight:600}.status{font-size:.75rem;color:#4fc3f7;margin-left:10px}.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:20px 30px}.stat-card{background:#0f1629;border:1px solid #1e2d4a;border-radius:10px;padding:14px 18px;position:relative;overflow:hidden}.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}.stat-card.blue::before{background:linear-gradient(90deg,#1565c0,#4fc3f7)}.stat-card.purple::before{background:linear-gradient(90deg,#7c4dff,#f06292)}.stat-card.green::before{background:linear-gradient(90deg,#00897b,#66bb6a)}.stat-card.orange::before{background:linear-gradient(90deg,#e65100,#ffb300)}.stat-card.red::before{background:linear-gradient(90deg,#b71c1c,#ef5350)}.stat-card.cyan::before{background:linear-gradient(90deg,#006064,#00bcd4)}.stat-label{font-size:.7rem;color:#7a8db0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}.stat-value{font-size:1.4rem;font-weight:700;color:#e0e6f0}.stat-sub{font-size:.7rem;color:#5a6d8a;margin-top:3px}.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 30px 20px}.chart-full{grid-column:1/-1}.chart-card{background:#0f1629;border:1px solid #1e2d4a;border-radius:10px;padding:18px}.chart-title{font-size:.85rem;font-weight:600;color:#b0c4de;margin-bottom:14px;display:flex;align-items:center;gap:8px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.chart-wrap{position:relative;height:240px}.chart-wrap.tall{height:300px}.insights{margin:0 30px 30px;background:#0f1629;border:1px solid #1e2d4a;border-radius:10px;padding:18px}.insights h3{font-size:.85rem;color:#b0c4de;margin-bottom:12px}.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}.insight-item{background:#0a0e1a;border-radius:8px;padding:12px;border:1px solid #1a2540}.insight-item .label{font-size:.7rem;color:#5a6d8a;margin-bottom:4px}.insight-item .val{font-size:.95rem;font-weight:600}.pos{color:#ef5350}.neg{color:#66bb6a}.neu{color:#4fc3f7}@media(max-width:768px){.charts-grid{grid-template-columns:1fr}.chart-full{grid-column:1}}
-</style>
-</head>
-<body>
-<div class="header">
-  <div>
-    <div class="header-title">&#9889; Nifty 50 &amp; India VIX &#8212; Spot Vol Beta Dashboard</div>
-    <div class="header-sub">Logic: Market &#8595;60bps &#8594; VIX +1pt &#8594; VX Futures +4% &nbsp;|&nbsp; Data: Yahoo Finance</div>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nifty & India VIX - Vol Beta Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}body{background:#0a0e1a;color:#e0e6f0;font-family:'Segoe UI',sans-serif;min-height:100vh}.header{background:linear-gradient(135deg,#0f1629,#1a2340);padding:20px 30px;border-bottom:1px solid #2a3a5c;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px}.header-title{font-size:1.5rem;font-weight:700;background:linear-gradient(90deg,#4fc3f7,#7c4dff,#f06292);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.header-sub{font-size:.72rem;color:#5a6d8a;margin-top:4px}.tweet-banner{background:#0d1b2a;border-left:3px solid #1da1f2;margin:15px 30px;padding:12px 16px;border-radius:6px;font-size:.8rem;color:#a0b4cc;line-height:1.5}.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 30px;background:#0d1422;border-bottom:1px solid #1e2d4a}.period-btns{display:flex;gap:6px}.period-btn{padding:6px 14px;border-radius:20px;border:1px solid #2a3a5c;background:transparent;color:#7a8db0;cursor:pointer;font-size:.78rem;transition:all .2s}.period-btn:hover,.period-btn.active{background:#1e3a6e;border-color:#4fc3f7;color:#4fc3f7}.date-inputs{display:flex;align-items:center;gap:8px;font-size:.78rem;color:#7a8db0}.date-inputs input{background:#111c30;border:1px solid #2a3a5c;color:#e0e6f0;padding:5px 10px;border-radius:6px;font-size:.78rem}.fetch-btn{padding:7px 18px;background:linear-gradient(135deg,#1565c0,#7c4dff);border:none;border-radius:20px;color:#fff;cursor:pointer;font-size:.78rem;font-weight:600}.status{font-size:.75rem;color:#4fc3f7;margin-left:10px}.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:20px 30px}.stat-card{background:#0f1629;border:1px solid #1e2d4a;border-radius:10px;padding:14px 18px;position:relative;overflow:hidden}.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}.stat-card.blue::before{background:linear-gradient(90deg,#1565c0,#4fc3f7)}.stat-card.purple::before{background:linear-gradient(90deg,#7c4dff,#f06292)}.stat-card.green::before{background:linear-gradient(90deg,#00897b,#66bb6a)}.stat-card.orange::before{background:linear-gradient(90deg,#e65100,#ffb300)}.stat-card.red::before{background:linear-gradient(90deg,#b71c1c,#ef5350)}.stat-card.cyan::before{background:linear-gradient(90deg,#006064,#00bcd4)}.stat-label{font-size:.7rem;color:#7a8db0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}.stat-value{font-size:1.4rem;font-weight:700;color:#e0e6f0}.stat-sub{font-size:.7rem;color:#5a6d8a;margin-top:3px}.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 30px 20px}.chart-full{grid-column:1/-1}.chart-card{background:#0f1629;border:1px solid #1e2d4a;border-radius:10px;padding:18px}.chart-title{font-size:.85rem;font-weight:600;color:#b0c4de;margin-bottom:14px;display:flex;align-items:center;gap:8px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.chart-wrap{position:relative;height:240px}.chart-wrap.tall{height:300px}.insights{margin:0 30px 30px;background:#0f1629;border:1px solid #1e2d4a;border-radius:10px;padding:18px}.insights h3{font-size:.85rem;color:#b0c4de;margin-bottom:12px}.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}.insight-item{background:#0a0e1a;border-radius:8px;padding:12px;border:1px solid #1a2540}.insight-item .label{font-size:.7rem;color:#5a6d8a;margin-bottom:4px}.insight-item .val{font-size:.95rem;font-weight:600}.pos{color:#ef5350}.neg{color:#66bb6a}.neu{color:#4fc3f7}@media(max-width:768px){.charts-grid{grid-template-columns:1fr}.chart-full{grid-column:1}}
+    </style>
+  </head>
+  <body>
+    <div class="header">
+        <div>
+              <div class="header-title">&#9889; Nifty 50 &amp; India VIX &#8212; Spot Vol Beta Dashboard</div>
+              <div class="header-sub">Logic: Market &#8595;60bps &#8594; VIX +1pt &#8594; VX Futures +4% &nbsp;|&nbsp; Data: Yahoo Finance</div>
+        </div>
+        <div class="header-sub">Inspired by @Ksidiii vol-beta framework</div>
+    </div>
+    <div class="tweet-banner">
+        <strong style="color:#1da1f2">Vol Beta Logic (@Ksidiii):</strong>strong> "Spot vol beta in the VIX complex was relatively hot &#8212; S&P/Nifty down ~60bps &#8594; VIX +1 vol point &#8594; VX Futures +4%. Effect strongest when trading high teen&#8211;low twenty vol. The vol &amp; bond market find inside news before everyone else."<br>
+        <em style="color:#5a6d8a">&#8594; Dashboard measures: Nifty daily return vs India VIX change, rolling vol beta, vol regime analysis</em>em>
+    </div>
+    <div class="controls">
+        <div class="period-btns">
+              <button class="period-btn" onclick="setPeriod(1,this)">1Y</button>button>
+              <button class="period-btn" onclick="setPeriod(2,this)">2Y</button>button>
+              <button class="period-btn active" onclick="setPeriod(5,this)">5Y</button>button>
+        </div>
+        <div class="date-inputs">
+              <span>Custom:</span>
+            <input type="date" id="startDate">
+            <span>to</span>
+            <input type="date" id="endDate">
+            <button class="fetch-btn" onclick="fetchCustom()">&#9654; Fetch</button>button>
+        </div>
+      <span class="status" id="statusMsg">&#8987; Loading 5Y data&#8230;</span>
+    </div>
+  <div class="stats-grid">
+    <div class="stat-card blue"><div class="stat-label">Nifty 50 (Last Close)</div><div class="stat-value" id="s_nifty">&#8212;</div><div class="stat-sub" id="s_nifty_chg">Loading&#8230;</div></div>
+    <div class="stat-card purple"><div class="stat-label">India VIX (Last Close)</div><div class="stat-value" id="s_vix">&#8212;</div><div class="stat-sub" id="s_vix_chg">Loading&#8230;</div></div>
+    <div class="stat-card orange"><div class="stat-label">Spot Vol Beta</div><div class="stat-value" id="s_beta">&#8212;</div><div class="stat-sub">VIX pts per 1% Nifty &#8595;</div></div>
+    <div class="stat-card green"><div class="stat-label">Nifty/VIX Correlation</div><div class="stat-value" id="s_corr">&#8212;</div><div class="stat-sub">Daily ret vs VIX change</div></div>
+    <div class="stat-card red"><div class="stat-label">Avg VIX on Down Days</div><div class="stat-value" id="s_vix_down">&#8212;</div><div class="stat-sub">Mean VIX when Nifty &lt; 0</div></div>
+    <div class="stat-card cyan"><div class="stat-label">Current VIX Regime</div><div class="stat-value" id="s_regime">&#8212;</div><div class="stat-sub">Low / High Teen / Twenty+</div></div>
   </div>
-  <div class="header-sub">Inspired by @Ksidiii vol-beta framework</div>
-</div>
-<div class="tweet-banner">
-  <strong style="color:#1da1f2">Vol Beta Logic (@Ksidiii):</strong> "Spot vol beta in the VIX complex was relatively hot &#8212; S&P/Nifty down ~60bps &#8594; VIX +1 vol point &#8594; VX Futures +4%. Effect strongest when trading high teen&#8211;low twenty vol. The vol &amp; bond market find inside news before everyone else."<br>
-  <em style="color:#5a6d8a">&#8594; Dashboard measures: Nifty daily return vs India VIX change, rolling vol beta, vol regime analysis</em>
-</div>
-<div class="controls">
-  <div class="period-btns">
-    <button class="period-btn" onclick="setPeriod(1,this)">1Y</button>
-    <button class="period-btn" onclick="setPeriod(2,this)">2Y</button>
-    <button class="period-btn active" onclick="setPeriod(5,this)">5Y</button>
+  <div class="charts-grid">
+    <div class="chart-card chart-full">
+        <div class="chart-title"><span class="dot" style="background:#4fc3f7"></span>Nifty 50 &amp; India VIX &#8212; Dual Axis Overlay</div>
+        <div class="chart-wrap tall"><canvas id="chartDual"></canvas>canvas></div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title"><span class="dot" style="background:#f06292"></span>Scatter: Nifty Daily Return vs VIX Change</div>
+        <div class="chart-wrap"><canvas id="chartScatter"></canvas>canvas></div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title"><span class="dot" style="background:#ffb300"></span>Rolling 30-Day Vol Beta</div>
+        <div class="chart-wrap"><canvas id="chartBeta"></canvas>canvas></div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title"><span class="dot" style="background:#66bb6a"></span>India VIX Distribution (Regime Buckets)</div>
+        <div class="chart-wrap"><canvas id="chartHist"></canvas>canvas></div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title"><span class="dot" style="background:#7c4dff"></span>Down-Day Vol Beta Distribution</div>
+        <div class="chart-wrap"><canvas id="chartBetaDist"></canvas>canvas></div>
+    </div>
   </div>
-  <div class="date-inputs">
-    <span>Custom:</span>
-    <input type="date" id="startDate">
-    <span>to</span>
-    <input type="date" id="endDate">
-    <button class="fetch-btn" onclick="fetchCustom()">&#9654; Fetch</button>
+  <div class="insights">
+    <h3>&#128202; Key Insights &#8212; Vol Regime &amp; Beta Analysis</h3>
+    <div class="insight-grid">
+        <div class="insight-item"><div class="label">% Days Nifty Down + VIX Up (Correct Vol Beta Signal)</div><div class="val neu" id="i_correct">&#8212;</div></div>
+        <div class="insight-item"><div class="label">Avg VIX Change on Big Down Days (&gt;1% Nifty fall)</div><div class="val pos" id="i_big_down">&#8212;</div></div>
+        <div class="insight-item"><div class="label">Avg VIX Change on Up Days</div><div class="val neg" id="i_up_days">&#8212;</div></div>
+        <div class="insight-item"><div class="label">Max Single Day VIX Spike</div><div class="val pos" id="i_max_spike">&#8212;</div></div>
+        <div class="insight-item"><div class="label">VIX &lt;15 &#8212; Low Vol Regime</div><div class="val neg" id="i_low_vol">&#8212;</div></div>
+        <div class="insight-item"><div class="label">VIX 15&#8211;20 &#8212; High Teen Regime</div><div class="val neu" id="i_mid_vol">&#8212;</div></div>
+        <div class="insight-item"><div class="label">VIX &gt;20 &#8212; Twenty+ Regime</div><div class="val pos" id="i_high_vol">&#8212;</div></div>
+        <div class="insight-item"><div class="label">Vol Beta by Regime (Mid 15-20 vs High &gt;20)</div><div class="val neu" id="i_regime_beta">&#8212;</div></div>
+    </div>
   </div>
-  <span class="status" id="statusMsg">&#8987; Loading 5Y data&#8230;</span>
-</div>
-<div class="stats-grid">
-  <div class="stat-card blue"><div class="stat-label">Nifty 50 (Last Close)</div><div class="stat-value" id="s_nifty">&#8212;</div><div class="stat-sub" id="s_nifty_chg">Loading&#8230;</div></div>
-  <div class="stat-card purple"><div class="stat-label">India VIX (Last Close)</div><div class="stat-value" id="s_vix">&#8212;</div><div class="stat-sub" id="s_vix_chg">Loading&#8230;</div></div>
-  <div class="stat-card orange"><div class="stat-label">Spot Vol Beta</div><div class="stat-value" id="s_beta">&#8212;</div><div class="stat-sub">VIX pts per 1% Nifty &#8595;</div></div>
-  <div class="stat-card green"><div class="stat-label">Nifty/VIX Correlation</div><div class="stat-value" id="s_corr">&#8212;</div><div class="stat-sub">Daily ret vs VIX change</div></div>
-  <div class="stat-card red"><div class="stat-label">Avg VIX on Down Days</div><div class="stat-value" id="s_vix_down">&#8212;</div><div class="stat-sub">Mean VIX when Nifty &lt; 0</div></div>
-  <div class="stat-card cyan"><div class="stat-label">Current VIX Regime</div><div class="stat-value" id="s_regime">&#8212;</div><div class="stat-sub">Low / High Teen / Twenty+</div></div>
-</div>
-<div class="charts-grid">
-  <div class="chart-card chart-full">
-    <div class="chart-title"><span class="dot" style="background:#4fc3f7"></span>Nifty 50 &amp; India VIX &#8212; Dual Axis Overlay</div>
-    <div class="chart-wrap tall"><canvas id="chartDual"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title"><span class="dot" style="background:#f06292"></span>Scatter: Nifty Daily Return vs VIX Change</div>
-    <div class="chart-wrap"><canvas id="chartScatter"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title"><span class="dot" style="background:#ffb300"></span>Rolling 30-Day Vol Beta</div>
-    <div class="chart-wrap"><canvas id="chartBeta"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title"><span class="dot" style="background:#66bb6a"></span>India VIX Distribution (Regime Buckets)</div>
-    <div class="chart-wrap"><canvas id="chartHist"></canvas></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title"><span class="dot" style="background:#7c4dff"></span>Down-Day Vol Beta Distribution</div>
-    <div class="chart-wrap"><canvas id="chartBetaDist"></canvas></div>
-  </div>
-</div>
-<div class="insights">
-  <h3>&#128202; Key Insights &#8212; Vol Regime &amp; Beta Analysis</h3>
-  <div class="insight-grid">
-    <div class="insight-item"><div class="label">% Days Nifty Down + VIX Up (Correct Vol Beta Signal)</div><div class="val neu" id="i_correct">&#8212;</div></div>
-    <div class="insight-item"><div class="label">Avg VIX Change on Big Down Days (&gt;1% Nifty fall)</div><div class="val pos" id="i_big_down">&#8212;</div></div>
-    <div class="insight-item"><div class="label">Avg VIX Change on Up Days</div><div class="val neg" id="i_up_days">&#8212;</div></div>
-    <div class="insight-item"><div class="label">Max Single Day VIX Spike</div><div class="val pos" id="i_max_spike">&#8212;</div></div>
-    <div class="insight-item"><div class="label">VIX &lt;15 &#8212; Low Vol Regime</div><div class="val neg" id="i_low_vol">&#8212;</div></div>
-    <div class="insight-item"><div class="label">VIX 15&#8211;20 &#8212; High Teen Regime</div><div class="val neu" id="i_mid_vol">&#8212;</div></div>
-    <div class="insight-item"><div class="label">VIX &gt;20 &#8212; Twenty+ Regime</div><div class="val pos" id="i_high_vol">&#8212;</div></div>
-    <div class="insight-item"><div class="label">Vol Beta by Regime (Mid 15-20 vs High &gt;20)</div><div class="val neu" id="i_regime_beta">&#8212;</div></div>
-  </div>
-</div>
-<script>
-var charts={};
-function fetchYahoo(sym,from,to){
-  var url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&period1='+from+'&period2='+to+'&events=history';
-  var proxy='https://corsproxy.io/?url='+encodeURIComponent(url);
-  return fetch(proxy).then(function(r){if(!r.ok)throw new Error('Fetch failed: '+sym);return r.json();}).then(function(j){
-    var res=j.chart.result[0],ts=res.timestamp,cl=res.indicators.quote[0].close;
-    return ts.map(function(t,i){return{date:new Date(t*1000),close:cl[i]};}).filter(function(d){return d.close!==null&&!isNaN(d.close);});
-  });
-}
-function merge(nifty,vix){
-  var m=new Map(vix.map(function(d){return[d.date.toISOString().slice(0,10),d.close];}));
-  return nifty.map(function(d){var k=d.date.toISOString().slice(0,10);return{date:k,nifty:d.close,vix:m.get(k)};}).filter(function(d){return d.vix!==undefined;});
-}
-function linReg(xs,ys){
-  var n=xs.length;if(n<2)return 0;
-  var sx=0,sy=0,sxy=0,sxx=0;
-  for(var i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxy+=xs[i]*ys[i];sxx+=xs[i]*xs[i];}
-  var d=n*sxx-sx*sx;return d===0?0:(n*sxy-sx*sy)/d;
-}
-function corr(xs,ys){
-  var n=xs.length,mx=0,my=0;
-  for(var i=0;i<n;i++){mx+=xs[i];my+=ys[i];}mx/=n;my/=n;
-  var num=0,dx=0,dy=0;
-  for(var i=0;i<n;i++){num+=(xs[i]-mx)*(ys[i]-my);dx+=(xs[i]-mx)*(xs[i]-mx);dy+=(ys[i]-my)*(ys[i]-my);}
-  var den=Math.sqrt(dx*dy);return den===0?0:num/den;
-}
-function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
-var DG='#1a2540',DT='#5a6d8a',DL='#b0c4de',TB={backgroundColor:'#0f1629',borderColor:'#2a3a5c',borderWidth:1};
-function buildDual(data){
-  dc('dual');
-  charts['dual']=new Chart(document.getElementById('chartDual').getContext('2d'),{
-    data:{labels:data.map(function(d){return d.date;}),datasets:[
-      {type:'line',label:'Nifty 50',data:data.map(function(d){return d.nifty;}),yAxisID:'y1',borderColor:'#4fc3f7',borderWidth:1.5,pointRadius:0,tension:0.2,fill:false},
-      {type:'line',label:'India VIX',data:data.map(function(d){return d.vix;}),yAxisID:'y2',borderColor:'#f06292',borderWidth:1.5,pointRadius:0,tension:0.2,fill:false}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{labels:{color:DL,font:{size:11}}},tooltip:TB},
-      scales:{x:{ticks:{color:DT,maxTicksLimit:10,font:{size:10}},grid:{color:DG}},
-        y1:{position:'left',ticks:{color:'#4fc3f7',font:{size:10}},grid:{color:DG},title:{display:true,text:'Nifty 50',color:'#4fc3f7',font:{size:10}}},
-        y2:{position:'right',ticks:{color:'#f06292',font:{size:10}},grid:{drawOnChartArea:false},title:{display:true,text:'India VIX',color:'#f06292',font:{size:10}}}}}
-  });
-}
-function buildScatter(rets,vixC){
-  dc('scatter');
-  var pts=rets.map(function(r,i){return{x:+r.toFixed(3),y:+vixC[i].toFixed(3)};});
-  charts['scatter']=new Chart(document.getElementById('chartScatter').getContext('2d'),{
-    type:'scatter',
-    data:{datasets:[{label:'Daily',data:pts,backgroundColor:pts.map(function(p){return p.x<0?'rgba(239,83,80,.55)':'rgba(102,187,106,.45)';}),pointRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...TB,callbacks:{label:function(d){return 'Nifty '+d.raw.x+'% | VIX '+(d.raw.y>=0?'+':'')+d.raw.y+'pts';}}}},
-      scales:{x:{title:{display:true,text:'Nifty Daily Return (%)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}},y:{title:{display:true,text:'VIX Change (pts)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}}}}
-  });
-}
-function buildBeta(data,rets,vixC){
-  dc('beta');var W=30,rb=[],lb=[];
-  for(var i=W;i<rets.length;i++){
-    var xs=[],ys=[];
-    for(var j=i-W;j<i;j++){if(rets[j]<0){xs.push(rets[j]);ys.push(vixC[j]);}}
-    rb.push(xs.length>2?+(-linReg(xs,ys)).toFixed(3):null);lb.push(data[i].date);
-  }
-  charts['beta']=new Chart(document.getElementById('chartBeta').getContext('2d'),{
-    type:'line',data:{labels:lb,datasets:[{label:'30D Vol Beta',data:rb,borderColor:'#ffb300',borderWidth:1.5,pointRadius:0,tension:0.3,spanGaps:true}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:TB},
-      scales:{x:{ticks:{color:DT,maxTicksLimit:8,font:{size:10}},grid:{color:DG}},y:{ticks:{color:'#ffb300',font:{size:10}},grid:{color:DG},title:{display:true,text:'Beta (VIX pts / 1% Nifty)',color:'#ffb300',font:{size:10}}}}}
-  });
-}
-function buildHist(vix){
-  dc('hist');
-  var bins=[0,10,12,14,16,18,20,22,25,30,40,100],labs=['<10','10-12','12-14','14-16','16-18','18-20','20-22','22-25','25-30','30-40','>40'],cnt=new Array(labs.length).fill(0);
-  vix.forEach(function(v){for(var i=0;i<bins.length-1;i++){if(v>=bins[i]&&v<bins[i+1]){cnt[i]++;break;}}});
-  var cols=labs.map(function(_,i){return i<3?'rgba(102,187,106,.75)':i<6?'rgba(255,179,0,.75)':'rgba(239,83,80,.75)';});
-  charts['hist']=new Chart(document.getElementById('chartHist').getContext('2d'),{
-    type:'bar',data:{labels:labs,datasets:[{label:'Days',data:cnt,backgroundColor:cols,borderRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:TB},
-      scales:{x:{ticks:{color:DT,font:{size:9}},grid:{color:DG}},y:{ticks:{color:'#66bb6a',font:{size:10}},grid:{color:DG},title:{display:true,text:'# Days',color:'#66bb6a',font:{size:10}}}}}
-  });
-}
-function buildBetaDist(rets,vixC){
-  dc('betadist');
-  var betas=[];
-  for(var i=0;i<rets.length;i++){if(rets[i]<-0.05){var b=-vixC[i]/rets[i];if(isFinite(b)&&b>-3&&b<20)betas.push(b);}}
-  var bins=[-3,0,.5,1,1.5,2,2.5,3,4,5,7,10,20],labs=['<0','0-.5','.5-1','1-1.5','1.5-2','2-2.5','2.5-3','3-4','4-5','5-7','7-10','>10'],cnt=new Array(labs.length).fill(0);
-  betas.forEach(function(b){for(var i=0;i<bins.length-1;i++){if(b>=bins[i]&&b<bins[i+1]){cnt[i]++;break;}}});
-  charts['betadist']=new Chart(document.getElementById('chartBetaDist').getContext('2d'),{
-    type:'bar',data:{labels:labs,datasets:[{label:'Down-Day Beta',data:cnt,backgroundColor:'rgba(124,77,255,.75)',borderRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:TB},
-      scales:{x:{ticks:{color:DT,font:{size:9}},grid:{color:DG}},y:{ticks:{color:'#7c4dff',font:{size:10}},grid:{color:DG},title:{display:true,text:'# Down Days',color:'#7c4dff',font:{size:10}}}}}
-  });
-}
-function loadData(from,to){
-  var msg=document.getElementById('statusMsg');msg.textContent='⏳ Fetching…';
-  Promise.all([fetchYahoo('^NSEI',from,to),fetchYahoo('^INDIAVIX',from,to)]).then(function(res){
-    var data=merge(res[0],res[1]);
-    if(data.length<10){msg.textContent='⚠ Not enough data!';return;}
-    var rets=[],vixC=[];
-    for(var i=1;i<data.length;i++){rets.push((data[i].nifty-data[i-1].nifty)/data[i-1].nifty*100);vixC.push(data[i].vix-data[i-1].vix);}
-    var lastN=data[data.length-1].nifty,prevN=data[data.length-2].nifty;
-    var lastV=data[data.length-1].vix,prevV=data[data.length-2].vix;
-    var nChg=((lastN-prevN)/prevN*100).toFixed(2),vChg=(lastV-prevV).toFixed(2);
-    document.getElementById('s_nifty').textContent=lastN.toLocaleString('en-IN',{maximumFractionDigits:0});
-    document.getElementById('s_nifty_chg').innerHTML='<span style="color:'+(nChg>=0?'#66bb6a':'#ef5350')+'">'+(nChg>=0?'▲':'▼')+' '+Math.abs(nChg)+'%</span> last day';
-    document.getElementById('s_vix').textContent=lastV.toFixed(2);
-    document.getElementById('s_vix_chg').innerHTML='<span style="color:'+(vChg>=0?'#ef5350':'#66bb6a')+'">'+(vChg>=0?'▲':'▼')+' '+Math.abs(vChg)+' pts</span> last day';
-    var dIdx=rets.map(function(r,i){return r<0?i:-1;}).filter(function(i){return i>=0;});
-    var dxs=dIdx.map(function(i){return rets[i];}),dys=dIdx.map(function(i){return vixC[i];});
-    var beta=-linReg(dxs,dys);
-    document.getElementById('s_beta').textContent=beta.toFixed(3);
-    document.getElementById('s_corr').textContent=corr(rets,vixC).toFixed(3);
-    var vod=dIdx.map(function(i){return data[i+1].vix;});
-    document.getElementById('s_vix_down').textContent=(vod.reduce(function(a,b){return a+b;},0)/vod.length).toFixed(1);
-    var cv=lastV,reg=cv<15?'Low Vol (<15)':cv<18?'High Teen (15-18)':cv<22?'Low Twenty (18-22)':'High Vol (>22)';
-    var rc=cv<15?'#66bb6a':cv<18?'#ffb300':cv<22?'#ff9800':'#ef5350';
-    document.getElementById('s_regime').innerHTML='<span style="color:'+rc+'">'+reg+'</span>';
-    var cb=rets.filter(function(r,i){return r<0&&vixC[i]>0;}).length,td=rets.filter(function(r){return r<0;}).length;
-    document.getElementById('i_correct').textContent=((cb/td)*100).toFixed(1)+'% ('+cb+'/'+td+' down days)';
-    var bd=rets.map(function(r,i){return r<-1?vixC[i]:null;}).filter(function(v){return v!==null;});
-    document.getElementById('i_big_down').textContent='+'+(bd.reduce(function(a,b){return a+b;},0)/bd.length).toFixed(2)+' pts avg';
-    var ud=rets.map(function(r,i){return r>0?vixC[i]:null;}).filter(function(v){return v!==null;});
-    document.getElementById('i_up_days').textContent=(ud.reduce(function(a,b){return a+b;},0)/ud.length).toFixed(2)+' pts avg';
-    document.getElementById('i_max_spike').textContent='+'+Math.max.apply(null,vixC).toFixed(2)+' pts';
-    var av=data.map(function(d){return d.vix;});
-    document.getElementById('i_low_vol').textContent=((av.filter(function(v){return v<15;}).length/av.length)*100).toFixed(1)+'% of days';
-    document.getElementById('i_mid_vol').textContent=((av.filter(function(v){return v>=15&&v<20;}).length/av.length)*100).toFixed(1)+'% of days';
-    document.getElementById('i_high_vol').textContent=((av.filter(function(v){return v>=20;}).length/av.length)*100).toFixed(1)+'% of days';
-    var mi=rets.map(function(r,i){return r<0&&data[i+1].vix>=15&&data[i+1].vix<20?i:-1;}).filter(function(i){return i>=0;});
-    var hi=rets.map(function(r,i){return r<0&&data[i+1].vix>=20?i:-1;}).filter(function(i){return i>=0;});
-    var bm=mi.length>2?(-linReg(mi.map(function(i){return rets[i];}),mi.map(function(i){return vixC[i];}))).toFixed(2):'N/A';
-    var bh=hi.length>2?(-linReg(hi.map(function(i){return rets[i];}),hi.map(function(i){return vixC[i];}))).toFixed(2):'N/A';
-    document.getElementById('i_regime_beta').textContent='Mid 15-20: '+bm+' | High >20: '+bh;
-    buildDual(data);buildScatter(rets,vixC);buildBeta(data.slice(1),rets,vixC);buildHist(av);buildBetaDist(rets,vixC);
-    msg.textContent='✓ '+data.length+' trading days | '+data[0].date+' → '+data[data.length-1].date;
-  }).catch(function(e){document.getElementById('statusMsg').textContent='❌ '+e.message;console.error(e);});
-}
-function setPeriod(y,btn){
-  document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  var t=Math.floor(Date.now()/1000);loadData(t-Math.round(y*365.25*24*3600),t);
-}
-function fetchCustom(){
-  var s=document.getElementById('startDate').value,e=document.getElementById('endDate').value;
-  if(!s||!e){document.getElementById('statusMsg').textContent='⚠ Select both dates';return;}
-  document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});
-  loadData(Math.floor(new Date(s).getTime()/1000),Math.floor(new Date(e).getTime()/1000));
-}
-var now=new Date(),ago=new Date(now);ago.setFullYear(now.getFullYear()-5);
-document.getElementById('endDate').value=now.toISOString().slice(0,10);
-document.getElementById('startDate').value=ago.toISOString().slice(0,10);
-var t0=Math.floor(Date.now()/1000);loadData(t0-Math.round(5*365.25*24*3600),t0);
-</script>
-</body>
-</html>
+  <script>
+    var charts={};
+    function fetchYahoo(sym,from,to){
+        var url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&period1='+from+'&period2='+to+'&events=history';
+        var proxy='https://corsproxy.io/?url='+encodeURIComponent(url);
+        return fetch(proxy).then(function(r){if(!r.ok)throw new Error('Fetch failed: '+sym);return r.json();}).then(function(j){
+              var res=j.chart.result[0],ts=res.timestamp,cl=res.indicators.quote[0].close;
+              return ts.map(function(t,i){return{date:new Date(t*1000),close:cl[i]};}).filter(function(d){return d.close!==null&&!isNaN(d.close);});
+        });
+    }
+    function merge(nifty,vix){
+        var m=new Map(vix.map(function(d){return[d.date.toISOString().slice(0,10),d.close];}));
+        return nifty.map(function(d){var k=d.date.toISOString().slice(0,10);return{date:k,nifty:d.close,vix:m.get(k)};}).filter(function(d){return d.vix!==undefined;});
+    }
+    function linReg(xs,ys){
+        var n=xs.length;if(n<2)return{m:0,b:0};
+        var sx=0,sy=0,sxy=0,sxx=0;
+        for(var i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxy+=xs[i]*ys[i];sxx+=xs[i]*xs[i];}
+        var d=n*sxx-sx*sx;
+        var m=d===0?0:(n*sxy-sx*sy)/d;
+        var b=(sy-m*sx)/n;
+        return{m:m,b:b};
+    }
+    function linRegSlope(xs,ys){
+        var r=linReg(xs,ys);return r.m;
+    }
+    function corr(xs,ys){
+        var n=xs.length,mx=0,my=0;
+        for(var i=0;i<n;i++){mx+=xs[i];my+=ys[i];}mx/=n;my/=n;
+        var num=0,dx=0,dy=0;
+        for(var i=0;i<n;i++){num+=(xs[i]-mx)*(ys[i]-my);dx+=(xs[i]-mx)*(xs[i]-mx);dy+=(ys[i]-my)*(ys[i]-my);}
+        var den=Math.sqrt(dx*dy);return den===0?0:num/den;
+    }
+    function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+    var DG='#1a2540',DT='#5a6d8a',DL='#b0c4de',TB={backgroundColor:'#0f1629',borderColor:'#2a3a5c',borderWidth:1};
+    function buildDual(data){
+        dc('dual');
+        charts['dual']=new Chart(document.getElementById('chartDual').getContext('2d'),{
+              data:{labels:data.map(function(d){return d.date;}),datasets:[
+                {type:'line',label:'Nifty 50',data:data.map(function(d){return d.nifty;}),yAxisID:'y1',borderColor:'#4fc3f7',borderWidth:1.5,pointRadius:0,tension:0.2,fill:false},
+                {type:'line',label:'India VIX',data:data.map(function(d){return d.vix;}),yAxisID:'y2',borderColor:'#f06292',borderWidth:1.5,pointRadius:0,tension:0.2,fill:false}
+                    ]},
+              options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+                             plugins:{legend:{labels:{color:DL,font:{size:11}}},tooltip:TB},
+                             scales:{x:{ticks:{color:DT,maxTicksLimit:10,font:{size:10}},grid:{color:DG}},
+                                             y1:{position:'left',ticks:{color:'#4fc3f7',font:{size:10}},grid:{color:DG},title:{display:true,text:'Nifty 50',color:'#4fc3f7',font:{size:10}}},
+                                             y2:{position:'right',ticks:{color:'#f06292',font:{size:10}},grid:{drawOnChartArea:false},title:{display:true,text:'India VIX',color:'#f06292',font:{size:10}}}}}
+        });
+    }
+    function buildScatter(rets,vixC,dates){
+        dc('scatter');
+        var pts=rets.map(function(r,i){return{x:+r.toFixed(3),y:+vixC[i].toFixed(3),date:dates[i]};});
+        // Compute trendline via linear regression
+        var xs=rets.map(function(r){return +r.toFixed(3);});
+        var ys=vixC.map(function(v){return +v.toFixed(3);});
+        var reg=linReg(xs,ys);
+        var xMin=Math.min.apply(null,xs),xMax=Math.max.apply(null,xs);
+        var trendPts=[{x:+xMin.toFixed(3),y:+(reg.m*xMin+reg.b).toFixed(3)},{x:+xMax.toFixed(3),y:+(reg.m*xMax+reg.b).toFixed(3)}];
+        charts['scatter']=new Chart(document.getElementById('chartScatter').getContext('2d'),{
+              type:'scatter',
+              data:{datasets:[
+                {
+                          label:'Daily',
+                          data:pts,
+                          backgroundColor:pts.map(function(p){return p.x<0?'rgba(239,83,80,.55)':'rgba(102,187,106,.45)';}),
+                          pointRadius:3,
+                          order:2
+                },
+                {
+                          label:'Trendline',
+                          data:trendPts,
+                          type:'line',
+                          borderColor:'rgba(255,255,100,0.85)',
+                          borderWidth:2,
+                          borderDash:[6,3],
+                          pointRadius:0,
+                          fill:false,
+                          tension:0,
+                          order:1
+                }
+                    ]},
+              options:{
+                      responsive:true,
+                      maintainAspectRatio:false,
+                      plugins:{
+                                legend:{
+                                            display:true,
+                                            labels:{
+                                                          color:DL,
+                                                          font:{size:10},
+                                                          filter:function(item){return item.text==='Trendline';}
+                                            }
+                                },
+                                tooltip:{
+                                            ...TB,
+                                            filter:function(item){return item.datasetIndex===0;},
+                                            callbacks:{
+                                                          label:function(d){
+                                                                          var raw=d.raw;
+                                                                          var dateStr=raw.date||'';
+                                                                          return [
+                                                                                            'Date: '+dateStr,
+                                                                                            'Nifty: '+(raw.x>=0?'+':'')+raw.x+'%',
+                                                                                            'VIX: '+(raw.y>=0?'+':'')+raw.y+' pts'
+                                                                                          ];
+                                                          }
+                                            }
+                                }
+                      },
+                      scales:{
+                                x:{title:{display:true,text:'Nifty Daily Return (%)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}},
+                                y:{title:{display:true,text:'VIX Change (pts)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}}
+                      }
+              }
+        });
+    }
+    function buildBeta(data,rets,vixC){
+        dc('beta');var W=30,rb=[],lb=[];
+        for(var i=W;i<rets.length;i++){
+              var xs=[],ys=[];
+              for(var j=i-W;j<i;j++){if(rets[j]<0){xs.push(rets[j]);ys.push(vixC[j]);}}
+              rb.push(xs.length>2?+(-linRegSlope(xs,ys)).toFixed(3):null);lb.push(data[i].date);
+        }
+        charts['beta']=new Chart(document.getElementById('chartBeta').getContext('2d'),{
+              type:'line',data:{labels:lb,datasets:[{label:'30D Vol Beta',data:rb,borderColor:'#ffb300',borderWidth:1.5,pointRadius:0,tension:0.3,spanGaps:true}]},
+              options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:TB},
+                             scales:{x:{ticks:{color:DT,maxTicksLimit:8,font:{size:10}},grid:{color:DG}},y:{ticks:{color:'#ffb300',font:{size:10}},grid:{color:DG},title:{display:true,text:'Beta (VIX pts / 1% Nifty)',color:'#ffb300',font:{size:10}}}}}
+        });
+    }
+    function buildHist(vix){
+        dc('hist');
+        var bins=[0,10,12,14,16,18,20,22,25,30,40,100],labs=['<10','10-12','12-14','14-16','16-18','18-20','20-22','22-25','25-30','30-40','>40'],cnt=new Array(labs.length).fill(0);
+        vix.forEach(function(v){for(var i=0;i<bins.length-1;i++){if(v>=bins[i]&&v<bins[i+1]){cnt[i]++;break;}}});
+        var cols=labs.map(function(_,i){return i<3?'rgba(102,187,106,.75)':i<6?'rgba(255,179,0,.75)':'rgba(239,83,80,.75)';});
+        charts['hist']=new Chart(document.getElementById('chartHist').getContext('2d'),{
+              type:'bar',data:{labels:labs,datasets:[{label:'Days',data:cnt,backgroundColor:cols,borderRadius:4}]},
+              options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:TB},
+                             scales:{x:{ticks:{color:DT,font:{size:9}},grid:{color:DG}},y:{ticks:{color:'#66bb6a',font:{size:10}},grid:{color:DG},title:{display:true,text:'# Days',color:'#66bb6a',font:{size:10}}}}}
+        });
+    }
+    function buildBetaDist(rets,vixC){
+        dc('betadist');
+        var betas=[];
+        for(var i=0;i<rets.length;i++){if(rets[i]<-0.05){var b=-vixC[i]/rets[i];if(isFinite(b)&&b>-3&&b<20)betas.push(b);}}
+        var bins=[-3,0,.5,1,1.5,2,2.5,3,4,5,7,10,20],labs=['<0','0-.5','.5-1','1-1.5','1.5-2','2-2.5','2.5-3','3-4','4-5','5-7','7-10','>10'],cnt=new Array(labs.length).fill(0);
+        betas.forEach(function(b){for(var i=0;i<bins.length-1;i++){if(b>=bins[i]&&b<bins[i+1]){cnt[i]++;break;}}});
+        charts['betadist']=new Chart(document.getElementById('chartBetaDist').getContext('2d'),{
+              type:'bar',data:{labels:labs,datasets:[{label:'Down-Day Beta',data:cnt,backgroundColor:'rgba(124,77,255,.75)',borderRadius:4}]},
+              options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:TB},
+                             scales:{x:{ticks:{color:DT,font:{size:9}},grid:{color:DG}},y:{ticks:{color:'#7c4dff',font:{size:10}},grid:{color:DG},title:{display:true,text:'# Down Days',color:'#7c4dff',font:{size:10}}}}}
+        });
+    }
+    function loadData(from,to){
+        var msg=document.getElementById('statusMsg');msg.textContent='⏳ Fetching…';
+        Promise.all([fetchYahoo('^NSEI',from,to),fetchYahoo('^INDIAVIX',from,to)]).then(function(res){
+              var data=merge(res[0],res[1]);
+              if(data.length<10){msg.textContent='⚠ Not enough data!';return;}
+              var rets=[],vixC=[],dates=[];
+              for(var i=1;i<data.length;i++){
+                      rets.push((data[i].nifty-data[i-1].nifty)/data[i-1].nifty*100);
+                      vixC.push(data[i].vix-data[i-1].vix);
+                      dates.push(data[i].date);
+              }
+              var lastN=data[data.length-1].nifty,prevN=data[data.length-2].nifty;
+              var lastV=data[data.length-1].vix,prevV=data[data.length-2].vix;
+              var nChg=((lastN-prevN)/prevN*100).toFixed(2),vChg=(lastV-prevV).toFixed(2);
+              document.getElementById('s_nifty').textContent=lastN.toLocaleString('en-IN',{maximumFractionDigits:0});
+              document.getElementById('s_nifty_chg').innerHTML='<span style="color:'+(nChg>=0?'#66bb6a':'#ef5350')+'">'+(nChg>=0?'▲':'▼')+' '+Math.abs(nChg)+'%</span> last day';
+              document.getElementById('s_vix').textContent=lastV.toFixed(2);
+              document.getElementById('s_vix_chg').innerHTML='<span style="color:'+(vChg>=0?'#ef5350':'#66bb6a')+'">'+(vChg>=0?'▲':'▼')+' '+Math.abs(vChg)+' pts</span> last day';
+              var dIdx=rets.map(function(r,i){return r<0?i:-1;}).filter(function(i){return i>=0;});
+              var dxs=dIdx.map(function(i){return rets[i];}),dys=dIdx.map(function(i){return vixC[i];});
+              var beta=-linRegSlope(dxs,dys);
+              document.getElementById('s_beta').textContent=beta.toFixed(3);
+              document.getElementById('s_corr').textContent=corr(rets,vixC).toFixed(3);
+              var vod=dIdx.map(function(i){return data[i+1].vix;});
+              document.getElementById('s_vix_down').textContent=(vod.reduce(function(a,b){return a+b;},0)/vod.length).toFixed(1);
+              var cv=lastV,reg=cv<15?'Low Vol (<15)':cv<18?'High Teen (15-18)':cv<22?'Low Twenty (18-22)':'High Vol (>22)';
+              var rc=cv<15?'#66bb6a':cv<18?'#ffb300':cv<22?'#ff9800':'#ef5350';
+              document.getElementById('s_regime').innerHTML='<span style="color:'+rc+'">'+reg+'</span>';
+              var cb=rets.filter(function(r,i){return r<0&&vixC[i]>0;}).length,td=rets.filter(function(r){return r<0;}).length;
+              document.getElementById('i_correct').textContent=((cb/td)*100).toFixed(1)+'% ('+cb+'/'+td+' down days)';
+              var bd=rets.map(function(r,i){return r<-1?vixC[i]:null;}).filter(function(v){return v!==null;});
+              document.getElementById('i_big_down').textContent='+'+(bd.reduce(function(a,b){return a+b;},0)/bd.length).toFixed(2)+' pts avg';
+              var ud=rets.map(function(r,i){return r>0?vixC[i]:null;}).filter(function(v){return v!==null;});
+              document.getElementById('i_up_days').textContent=(ud.reduce(function(a,b){return a+b;},0)/ud.length).toFixed(2)+' pts avg';
+              document.getElementById('i_max_spike').textContent='+'+Math.max.apply(null,vixC).toFixed(2)+' pts';
+              var av=data.map(function(d){return d.vix;});
+              document.getElementById('i_low_vol').textContent=((av.filter(function(v){return v<15;}).length/av.length)*100).toFixed(1)+'% of days';
+              document.getElementById('i_mid_vol').textContent=((av.filter(function(v){return v>=15&&v<20;}).length/av.length)*100).toFixed(1)+'% of days';
+              document.getElementById('i_high_vol').textContent=((av.filter(function(v){return v>=20;}).length/av.length)*100).toFixed(1)+'% of days';
+              var mi=rets.map(function(r,i){return r<0&&data[i+1].vix>=15&&data[i+1].vix<20?i:-1;}).filter(function(i){return i>=0;});
+              var hi=rets.map(function(r,i){return r<0&&data[i+1].vix>=20?i:-1;}).filter(function(i){return i>=0;});
+              var bm=mi.length>2?(-linRegSlope(mi.map(function(i){return rets[i];}),mi.map(function(i){return vixC[i];}))).toFixed(2):'N/A';
+              var bh=hi.length>2?(-linRegSlope(hi.map(function(i){return rets[i];}),hi.map(function(i){return vixC[i];}))).toFixed(2):'N/A';
+              document.getElementById('i_regime_beta').textContent='Mid 15-20: '+bm+' | High >20: '+bh;
+              buildDual(data);buildScatter(rets,vixC,dates);buildBeta(data.slice(1),rets,vixC);buildHist(av);buildBetaDist(rets,vixC);
+              msg.textContent='✓ '+data.length+' trading days | '+data[0].date+' → '+data[data.length-1].date;
+        }).catch(function(e){document.getElementById('statusMsg').textContent='❌ '+e.message;console.error(e);});
+    }
+    function setPeriod(y,btn){
+        document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});
+        if(btn)btn.classList.add('active');
+        var t=Math.floor(Date.now()/1000);loadData(t-Math.round(y*365.25*24*3600),t);
+    }
+    function fetchCustom(){
+        var s=document.getElementById('startDate').value,e=document.getElementById('endDate').value;
+        if(!s||!e){document.getElementById('statusMsg').textContent='⚠ Select both dates';return;}
+        document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});
+        loadData(Math.floor(new Date(s).getTime()/1000),Math.floor(new Date(e).getTime()/1000));
+    }
+    var now=new Date(),ago=new Date(now);ago.setFullYear(now.getFullYear()-5);
+    document.getElementById('endDate').value=now.toISOString().slice(0,10);
+    document.getElementById('startDate').value=ago.toISOString().slice(0,10);
+    var t0=Math.floor(Date.now()/1000);loadData(t0-Math.round(5*365.25*24*3600),t0);
+  </script>
+  </body>
+</html>html>
+  </script></h3></span></span>
+        </div>
+  </body>
+  </style></title>
+  </head>

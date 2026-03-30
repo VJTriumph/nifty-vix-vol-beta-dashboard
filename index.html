@@ -126,7 +126,33 @@ function buildDual(data){
         y2:{position:'right',ticks:{color:'#f06292',font:{size:10}},grid:{drawOnChartArea:false},title:{display:true,text:'India VIX',color:'#f06292',font:{size:10}}}}}
   });
 }
-function buildScatter(rets,vixC,dates){ dc('scatter'); var pts=rets.map(function(r,i){return{x:+r.toFixed(3),y:+vixC[i].toFixed(3),date:dates[i]};}); var xs=rets.map(function(r){return+r.toFixed(3);}); var ys=vixC.map(function(v){return+v.toFixed(3);}); var reg=linReg(xs,ys); var xMin=Math.min.apply(null,xs),xMax=Math.max.apply(null,xs); var trendPts=[{x:+xMin.toFixed(3),y:+(reg.m*xMin+reg.b).toFixed(3)},{x:+xMax.toFixed(3),y:+(reg.m*xMax+reg.b).toFixed(3)}]; var lastPt=pts[pts.length-1]; charts['scatter']=new Chart(document.getElementById('chartScatter').getContext('2d'),{ type:'scatter', data:{datasets:[ {label:'Daily',data:pts,backgroundColor:pts.map(function(p){return p.x<0?'rgba(239,83,80,.55)':'rgba(102,187,106,.45)';}),pointRadius:3,order:2}, {label:'Trendline',data:trendPts,type:'line',borderColor:'rgba(255,255,100,0.85)',borderWidth:2,borderDash:[6,3],pointRadius:0,fill:false,tension:0,order:1}, {label:'Latest ('+lastPt.date+')',data:[lastPt],backgroundColor:'rgba(255,220,0,1)',borderColor:'#ffffff',borderWidth:2,pointRadius:10,pointHoverRadius:12,order:0,type:'scatter'} ]}, options:{responsive:true,maintainAspectRatio:false, plugins:{ legend:{display:true,labels:{color:DL,font:{size:10},filter:function(item){return item.text==='Trendline'||item.text.startsWith('Latest');}}}, tooltip:{...TB,filter:function(item){return item.datasetIndex!==1;},callbacks:{label:function(d){var raw=d.raw;return['Date: '+raw.date,'Nifty: '+(raw.x>=0?'+':'')+raw.x+'%','VIX: '+(raw.y>=0?'+':'')+raw.y+' pts'];}}} }, scales:{ x:{title:{display:true,text:'Nifty Daily Return (%)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}}, y:{title:{display:true,text:'VIX Change (pts)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}} } } }); } function buildBeta(data,rets,vixC){
+function buildScatter(rets,vixC,dates){
+  dc('scatter');
+  var pts=rets.map(function(r,i){return{x:+r.toFixed(3),y:+vixC[i].toFixed(3),date:dates[i]};});
+  var xs=rets.map(function(r){return+r.toFixed(3);});
+  var ys=vixC.map(function(v){return+v.toFixed(3);});
+  var reg=linReg(xs,ys);
+  var xMin=Math.min.apply(null,xs),xMax=Math.max.apply(null,xs);
+  var trendPts=[{x:+xMin.toFixed(3),y:+(reg.m*xMin+reg.b).toFixed(3)},{x:+xMax.toFixed(3),y:+(reg.m*xMax+reg.b).toFixed(3)}];
+  charts['scatter']=new Chart(document.getElementById('chartScatter').getContext('2d'),{
+    type:'scatter',
+    data:{datasets:[
+      {label:'Daily',data:pts,backgroundColor:pts.map(function(p){return p.x<0?'rgba(239,83,80,.55)':'rgba(102,187,106,.45)';}),pointRadius:3,order:2},
+      {label:'Trendline',data:trendPts,type:'line',borderColor:'rgba(255,255,100,0.85)',borderWidth:2,borderDash:[6,3],pointRadius:0,fill:false,tension:0,order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true,labels:{color:DL,font:{size:10},filter:function(item){return item.text==='Trendline';}}},
+        tooltip:{...TB,filter:function(item){return item.datasetIndex===0;},callbacks:{label:function(d){var raw=d.raw;return['Date: '+raw.date,'Nifty: '+(raw.x>=0?'+':'')+raw.x+'%','VIX: '+(raw.y>=0?'+':'')+raw.y+' pts'];}}}
+      },
+      scales:{
+        x:{title:{display:true,text:'Nifty Daily Return (%)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}},
+        y:{title:{display:true,text:'VIX Change (pts)',color:'#7a8db0',font:{size:10}},ticks:{color:DT,font:{size:9}},grid:{color:DG}}
+      }
+    }
+  });
+}
+function buildBeta(data,rets,vixC){
   dc('beta');var W=30,rb=[],lb=[];
   for(var i=W;i<rets.length;i++){
     var xs=[],ys=[];
@@ -163,10 +189,10 @@ function buildBetaDist(rets,vixC){
   });
 }
 function loadData(from,to){
-  var msg=document.getElementById('statusMsg');msg.textContent='Ã¢ÂÂ³ FetchingÃ¢ÂÂ¦';
+  var msg=document.getElementById('statusMsg');msg.textContent='⏳ Fetching…';
   Promise.all([fetchYahoo('^NSEI',from,to),fetchYahoo('^INDIAVIX',from,to)]).then(function(res){
     var data=merge(res[0],res[1]);
-    if(data.length<10){msg.textContent='Ã¢ÂÂ  Not enough data!';return;}
+    if(data.length<10){msg.textContent='⚠ Not enough data!';return;}
     var rets=[],vixC=[],dates=[];
     for(var i=1;i<data.length;i++){
       rets.push((data[i].nifty-data[i-1].nifty)/data[i-1].nifty*100);
@@ -177,9 +203,9 @@ function loadData(from,to){
     var lastV=data[data.length-1].vix,prevV=data[data.length-2].vix;
     var nChg=((lastN-prevN)/prevN*100).toFixed(2),vChg=(lastV-prevV).toFixed(2);
     document.getElementById('s_nifty').textContent=lastN.toLocaleString('en-IN',{maximumFractionDigits:0});
-    document.getElementById('s_nifty_chg').innerHTML='<span style="color:'+(nChg>=0?'#66bb6a':'#ef5350')+'">'+(nChg>=0?'Ã¢ÂÂ²':'Ã¢ÂÂ¼')+' '+Math.abs(nChg)+'%</span> last day';
+    document.getElementById('s_nifty_chg').innerHTML='<span style="color:'+(nChg>=0?'#66bb6a':'#ef5350')+'">'+(nChg>=0?'▲':'▼')+' '+Math.abs(nChg)+'%</span> last day';
     document.getElementById('s_vix').textContent=lastV.toFixed(2);
-    document.getElementById('s_vix_chg').innerHTML='<span style="color:'+(vChg>=0?'#ef5350':'#66bb6a')+'">'+(vChg>=0?'Ã¢ÂÂ²':'Ã¢ÂÂ¼')+' '+Math.abs(vChg)+' pts</span> last day';
+    document.getElementById('s_vix_chg').innerHTML='<span style="color:'+(vChg>=0?'#ef5350':'#66bb6a')+'">'+(vChg>=0?'▲':'▼')+' '+Math.abs(vChg)+' pts</span> last day';
     var dIdx=rets.map(function(r,i){return r<0?i:-1;}).filter(function(i){return i>=0;});
     var dxs=dIdx.map(function(i){return rets[i];}),dys=dIdx.map(function(i){return vixC[i];});
     var beta=-linRegSlope(dxs,dys);
@@ -207,8 +233,8 @@ function loadData(from,to){
     var bh=hi.length>2?(-linRegSlope(hi.map(function(i){return rets[i];}),hi.map(function(i){return vixC[i];}))).toFixed(2):'N/A';
     document.getElementById('i_regime_beta').textContent='Mid 15-20: '+bm+' | High >20: '+bh;
     buildDual(data);buildScatter(rets,vixC,dates);buildBeta(data.slice(1),rets,vixC);buildHist(av);buildBetaDist(rets,vixC);
-    msg.textContent='Ã¢ÂÂ '+data.length+' trading days | '+data[0].date+' Ã¢ÂÂ '+data[data.length-1].date;
-  }).catch(function(e){document.getElementById('statusMsg').textContent='Ã¢ÂÂ '+e.message;console.error(e);});
+    msg.textContent='✓ '+data.length+' trading days | '+data[0].date+' → '+data[data.length-1].date;
+  }).catch(function(e){document.getElementById('statusMsg').textContent='❌ '+e.message;console.error(e);});
 }
 function setPeriod(y,btn){
   document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});
@@ -217,7 +243,7 @@ function setPeriod(y,btn){
 }
 function fetchCustom(){
   var s=document.getElementById('startDate').value,e=document.getElementById('endDate').value;
-  if(!s||!e){document.getElementById('statusMsg').textContent='Ã¢ÂÂ  Select both dates';return;}
+  if(!s||!e){document.getElementById('statusMsg').textContent='⚠ Select both dates';return;}
   document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});
   loadData(Math.floor(new Date(s).getTime()/1000),Math.floor(new Date(e).getTime()/1000));
 }
